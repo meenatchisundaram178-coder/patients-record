@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajesh Opticals Login</title>
+<link rel="icon" href="logo.jpg">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(to bottom right, #5583c1, #00C693);
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        width: 400px;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 35px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    .container img {
+        width: 130px;
+        margin-bottom: 10px;
+    }
+
+    .container h1 {
+        margin: 0;
+        font-size: 26px;
+        color: #333;
+        margin-bottom: 25px;
+        font-weight: bold;
+    }
+
+    .input-box, .dropdown {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #b58600;
+        color: white;
+        font-size: 17px;
+        margin-top: 15px;
+        cursor: pointer;
+    }
+
+    .toggle-link {
+        margin-top: 15px;
+        display: block;
+        font-size: 14px;
+        color: #3719B2;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    function showSignup() {
+        document.getElementById("login-box").style.display = "none";
+        document.getElementById("signup-box").style.display = "block";
+    }
+
+    function showLogin() {
+        document.getElementById("signup-box").style.display = "none";
+        document.getElementById("login-box").style.display = "block";
+    }
+    /* SIGNUP SAVE */
+function signupUser() {
+    let fullName = document.getElementById("s_fullname").value;
+    let phone = document.getElementById("s_phone").value;
+    let email = document.getElementById("s_email").value;
+    let username = document.getElementById("s_username").value;
+    let password = document.getElementById("s_password").value;
+
+    if (!fullName || !phone || !email || !username || !password) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    let signupData = {
+        fullname: fullName,
+        phone: phone,
+        email: email,
+        username: username,
+        password: password
+    };
+
+    localStorage.setItem("signupData", JSON.stringify(signupData));
+
+    alert("Account Created Successfully!");
+
+    window.location.href = "settings.html";  // 🔗 Go to Settings
+}
+/* LOGIN CHECK */
+function loginUser() {
+    let username = document.getElementById("l_username").value;
+    let password = document.getElementById("l_password").value;
+
+    let saved = JSON.parse(localStorage.getItem("signupData"));
+
+    if (!saved) {
+        alert("No account found! Please Sign Up.");
+        return;
+    }
+
+    if (username === saved.username && password === saved.password) {
+        alert("Login Successful!");
+        window.location.href = "settings.html";
+    } else {
+        alert("Invalid username or password");
+    }
+}
+
+</script>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Logo + Name (top of box) -->
+    <img src="logo.jpg" alt="Logo">
+    <h1>RAJESH OPTICALS</h1>
+
+    <!-- LOGIN -->
+    <div id="login-box">
+        <select class="dropdown">
+            <option>Admin</option>
+            <option>Staff</option>
+        </select>
+
+        <input type="text" class="input-box" placeholder="Username / Phone No">
+        <input type="password" class="input-box" placeholder="Password">
+
+        <button class="btn">Login</button>
+
+        <span class="toggle-link" onclick="showSignup()">New User? Sign Up</span>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="signup-box" style="display:none;">
+        <input type="text" class="input-box" placeholder="Full Name">
+        <input type="text" class="input-box" placeholder="Phone Number">
+        <input type="text" class="input-box" placeholder="Email">
+        <input type="text" class="input-box" placeholder="Create Username">
+        <input type="password" class="input-box" placeholder="Create Password">
+
+        <button class="btn">Sign Up</button>
+
+        <span class="toggle-link" onclick="showLogin()">Already have an account? Login</span>
+    </div>
+
+</div>
+
+</body>
+</html>

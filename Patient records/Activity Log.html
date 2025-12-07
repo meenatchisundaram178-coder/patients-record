@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Activity Log</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f3f3;
+        padding: 30px;
+    }
+
+    .log-container {
+        width: 90%;
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #008c9e;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+    }
+
+    th {
+         background: linear-gradient(90deg, #2E73CE, #00C693);
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+
+    td {
+        padding: 12px;
+        background: #fafafa;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table-wrapper {
+        max-height: 320px;
+        overflow-y: auto;
+        border: 1px solid #e0e0e0;
+        border-top: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="log-container">
+    <h2>User Activity Log</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Logged user details (from login page)
+    const userId = localStorage.getItem("loggedUserId") || "30";
+    const userName = localStorage.getItem("loggedUserName") || "Mr.Joe";
+
+    // Load stored logs
+    let logs = JSON.parse(localStorage.getItem("activityLogs")) || [];
+
+    // Insert logs into the table
+    function loadLogs() {
+        const tbody = document.getElementById("logTableBody");
+        tbody.innerHTML = "";
+        logs.forEach(log => {
+            const row = `
+                <tr>
+                    <td>${log.userId}</td>
+                    <td>${log.status}</td>
+                    <td>${log.name}</td>
+                    <td>${log.time}</td>
+                    <td>${log.action}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Create a login entry
+    function addLogin() {
+        const entry = {
+            userId,
+            status: "logged in",
+            name: userName,
+            time: new Date().toISOString().slice(0,19).replace("T"," "),
+            action: "-"
+        };
+        logs.push(entry);
+        localStorage.setItem("activityLogs", JSON.stringify(logs));
+    }
+
+    // This function runs when user clicks logout link
+    function userLogout() {
+        const entry = {
+            userId,
+            status: "logout",
+            name: userName,
+            time: new Date().toISOString().slice(0,19).replace("T"," "),
+            action: "-"
+        };
+        logs.push(entry);
+        localStorage.setItem("activityLogs", JSON.stringify(logs));
+        sessionStorage.removeItem("loginRecorded");
+    }
+
+    // Record login only once per session
+    if (sessionStorage.getItem("loginRecorded") !== "yes") {
+        addLogin();
+        sessionStorage.setItem("loginRecorded", "yes");
+    }
+
+    loadLogs();
+</script>
+
+</body>
+</html>

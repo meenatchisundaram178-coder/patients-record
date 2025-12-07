@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patient Records</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #eef3f9;
+}
+
+.top-bar {
+    width: 100%;
+    background: linear-gradient(90deg, #1e66d1, #00c7a3);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.top-bar input, .top-bar select {
+    padding: 12px;
+    width: 280px;
+    border: none;
+    border-radius: 8px;
+}
+
+.top-bar button {
+    padding: 12px 26px;
+    border: none;
+    background: #ffa500;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #0099cc;
+    color: white;
+}
+
+button.action {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.view-btn { background: #22b14c; color: white; }
+.edit-btn { background: #f39c12; color: white; }
+.delete-btn { background: #e03a3a; color: white; }
+
+</style>
+</head>
+<body>
+
+<!-- 🔍 SEARCH BAR SECTION -->
+<div class="top-bar">
+    <input type="text" id="searchText" placeholder="Search name or phone...">
+    
+    <select id="branchFilter">
+        <option value="" disabled selected>All Branches</option>
+        <option value="Tirupattur">Tirupattur</option>
+        <option value="Uthangarai">Uthangarai</option>
+    </select>
+
+    <button onclick="applyFilter()">Search</button>
+</div>
+
+<div class="container">
+    <h2>Patient Records</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Branch</th>
+            <th>Remaining</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="recordBody"></tbody>
+    </table>
+</div>
+
+<script>
+
+function loadRecords(filtered = null) {
+    let patients = JSON.parse(localStorage.getItem("patients")) || [];
+    let tbody = document.getElementById("recordBody");
+    tbody.innerHTML = "";
+
+    let list = filtered || patients;
+
+    list.forEach((p, index) => {
+        let row = `
+        <tr>
+            <td>${p.name}</td>
+            <td>${p.phone}</td>
+            <td>${p.branch}</td>
+            <td>${p.remaining}</td>
+            <td>
+                <button class="action view-btn" onclick="viewPatient(${index})">View</button>
+                <button class="action edit-btn" onclick="editPatient(${index})">Edit</button>
+                <button class="action delete-btn" onclick="deletePatient(${index})">Delete</button>
+            </td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+function applyFilter() {
+    let search = document.getElementById("searchText").value.toLowerCase();
+    let branch = document.getElementById("branchFilter").value;
+
+    let patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+    let filtered = patients.filter(p => {
+        let matchText = p.name.toLowerCase().includes(search) ||
+                        p.phone.toLowerCase().includes(search);
+
+        let matchBranch = (branch === "All") || (p.branch === branch);
+
+        return matchText && matchBranch;
+    });
+
+    loadRecords(filtered);
+}
+
+function viewPatient(index) {
+    localStorage.setItem("editIndex", index);
+    window.location.href = "Add Patient.html";
+}
+
+function editPatient(index) {
+    localStorage.setItem("editIndex", index);
+    window.location.href = "Add Patient.html";
+}
+
+function deletePatient(index) {
+    if (confirm("Are you sure you want to delete?")) {
+        let patients = JSON.parse(localStorage.getItem("patients"));
+        patients.splice(index, 1);
+        localStorage.setItem("patients", JSON.stringify(patients));
+        applyFilter();
+    }
+}
+
+loadRecords();
+
+</script>
+
+</body>
+</html>

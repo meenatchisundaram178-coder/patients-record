@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Notification Settings — Admin</title>
+<style>
+  :root{
+    --bg1:#f9f5ff;
+    --card-grad-left: #2EE0CE; /* changed to match screenshot vibe */
+    --card-grad-right:#00C693;
+    --accent:#0d8a5a;
+    --muted:#9aa3ad;
+    --white:#fff;
+    --danger:#ff5a7a;
+    --shadow: 0 10px 30px rgba(13,138,90,0.08);
+  }
+
+  html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background: linear-gradient(135deg,#faf6ff 0%, #f5fbfb 100%);color:#222}
+  .wrap{max-width:1200px;margin:28px auto;padding:18px;display:flex;gap:28px;align-items:flex-start}
+  /* Left: notifications list */
+  .panel{
+    flex:1;
+    background:linear-gradient(180deg,#fff,#fff);
+    border-radius:16px;
+    padding:24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+    min-width:540px;
+  }
+
+  .panel h3{margin:0 0 14px;font-size:20px;color:#1d1f21}
+  .panel p.lead{color:var(--muted);margin:0 0 18px;font-size:14px}
+
+  .notif-list{display:flex;flex-direction:column;gap:18px}
+  .notif-item{
+    display:flex;align-items:center;justify-content:space-between;
+    background:#fff;border-radius:12px;padding:14px 18px;border:1px solid rgba(13,138,90,0.03);
+    box-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  }
+  .notif-left{display:flex;gap:12px;align-items:center}
+  .badge{
+    width:46px;height:46px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+    background:linear-gradient(135deg,#00d2ff,#4e00ff);
+    flex-shrink:0;
+    box-shadow: 0 6px 18px rgba(78,0,255,0.12);
+  }
+  .notif-body{display:flex;flex-direction:column}
+  .notif-title{font-weight:700;font-size:15px}
+  .notif-desc{font-size:13px;color:var(--muted)}
+
+  /* Toggle */
+  .controls{display:flex;gap:12px;align-items:center}
+  .toggle{
+    --w:46px; --h:26px;
+    width:var(--w);height:var(--h);border-radius:20px;background:#e9eef0;position:relative;cursor:pointer;
+    transition:all .18s ease;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.03);
+  }
+  .toggle .knob{
+    width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    transition:all .18s ease;
+  }
+  .toggle.on{background:linear-gradient(90deg,#3de39a,#15b37b)}
+  .toggle.on .knob{transform:translateX(20px)}
+
+  .small-btn{
+    background:#f5f6f8;border-radius:8px;padding:8px 10px;border:1px solid #eee;font-size:13px;color:#444;
+    cursor:pointer;
+  }
+
+  /* Right: founder contact card */
+  .right{
+    width:360px;min-width:320px;
+    background:linear-gradient(135deg,#07a88d,#2bd2a5);
+    border-radius:16px;padding:20px;color:white;box-shadow:0 20px 60px rgba(7,160,141,0.12);
+  }
+  .right h4{margin:0 0 8px;font-size:18px}
+  .contact-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+    margin-top:10px;padding:18px;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+  }
+  .avatar{
+    width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+  .phone{font-size:20px;font-weight:800;letter-spacing:0.6px}
+  .open-btn{
+    margin-top:6px;background:white;color:#0aa57f;padding:12px 16px;border-radius:12px;border:none;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 30px rgba(10,165,127,0.12)
+  }
+  .muted-note{font-size:12px;color:rgba(255,255,255,0.85);opacity:0.9;text-align:center;margin-top:8px}
+
+  /* top small admin info and actions */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .admin-info{display:flex;gap:12px;align-items:center}
+  .admin-name{font-weight:800}
+  .profile-cta{background:#fff;border-radius:8px;padding:8px 10px;border:none;cursor:pointer;color:#0a5a3c;font-weight:700}
+
+  /* small modal for admin profile */
+  .modal-back{position:fixed;inset:0;background:rgba(17,24,39,0.45);display:none;align-items:center;justify-content:center;z-index:999}
+  .modal{background:#fff;border-radius:12px;padding:18px;width:420px;box-shadow:0 30px 80px rgba(2,6,23,0.3)}
+  .modal h4{margin:0 0 10px}
+  .form-row{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+  .form-row input{padding:10px;border-radius:8px;border:1px solid #ddd}
+  .modal .save{background:linear-gradient(90deg,#2ebf9e,#00a882);color:white;padding:10px;border-radius:8px;border:none;cursor:pointer}
+
+  /* access denied */
+  .denied{padding:28px;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.06);text-align:center}
+  .denied h3{margin:0 0 12px}
+  .hint{color:var(--muted)}
+
+  /* responsive */
+  @media (max-width:980px){
+    .wrap{flex-direction:column;padding:16px}
+    .panel{min-width:auto}
+    .right{width:100%}
+  }
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Left: notification settings -->
+  <div class="panel" id="mainPanel" aria-live="polite">
+    <div class="topbar">
+      <div class="admin-info">
+        <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#21c68a,#0d8a5a);display:flex;align-items:center;justify-content:center;color:white;font-weight:800" id="adminInitial">A</div>
+        <div>
+          <div id="adminName" style="font-weight:800">Admin</div>
+          <div style="font-size:13px;color:var(--muted)" id="adminPhoneShort">+91 ··· ··· ···</div>
+        </div>
+      </div>
+      <div>
+        <button class="profile-cta" id="btnEditProfile">Edit Admin</button>
+      </div>
+    </div>
+
+    <h3>Notification Settings</h3>
+    <p class="lead">Turn on notifications to receive important updates directly on WhatsApp. Only admin can change these settings.</p>
+
+    <div class="notif-list" id="notifList">
+      <!-- items generated by JS -->
+    </div>
+
+    <div style="margin-top:20px;color:var(--muted);font-size:13px">
+      <strong>Note:</strong> When you enable a notification it will open WhatsApp to send a prefilled message. This action is performed by the browser (wa.me link).
+    </div>
+  </div>
+
+  <!-- Right: founder contact / admin contact -->
+  <aside class="right" id="rightCard">
+    <h4>Founder Contact</h4>
+
+    <div class="contact-card" aria-hidden="false">
+      <div class="avatar" id="avatarLetter">A</div>
+      <div style="text-align:center">
+        <div style="font-size:12px;color:rgba(255,255,255,0.9)">WhatsApp Number</div>
+        <div class="phone" id="founderPhone">+91 98765 43210</div>
+      </div>
+
+      <button class="open-btn" id="openWhatsAppBtn">Open WhatsApp</button>
+
+      <div class="muted-note">All notifications (New patient / Payments / Staff logins) will be sent to this number.</div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- modal to set admin profile -->
+<div class="modal-back" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h4>Admin profile</h4>
+    <div class="form-row">
+      <label>Admin name</label>
+      <input id="modalName" placeholder="Full name">
+    </div>
+    <div class="form-row">
+      <label>WhatsApp Number (with country code)</label>
+      <input id="modalPhone" placeholder="+91 98765 43210">
+      <small style="color:var(--muted)">Enter full number including +country code (e.g. +919876543210)</small>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+      <button onclick="closeModal()" style="padding:9px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer">Cancel</button>
+      <button class="save" onclick="saveAdmin()">Save Admin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Notification Settings Page
+  - pulls admin profile from localStorage (key: signupData)
+  - if none exists, allows creating it (modal)
+  - toggles persist in localStorage under 'notifSettings'
+  - toggling ON will open WhatsApp (wa.me) with a prefilled message to admin number
+  - test button sends a sample message
+  - this page intended to be admin-only (simple client-side check)
+*/
+
+// --------------------------- Utilities ---------------------------
+const $ = sel => document.querySelector(sel);
+const getLS = k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } };
+const setLS = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+// --------------------------- Admin profile ---------------------------
+let admin = getLS('signupData'); // expected shape: { name, phone, username, role }
+if (admin && typeof admin === 'object' && !admin.phone) admin = null;
+
+// For demonstration: if there's a currentUser in localStorage and it's not admin, treat differently
+const currentUser = getLS('currentUser') || null;
+
+// show modal controls
+const modalBack = $('#modalBack');
+function openModal(){ modalBack.style.display = 'flex'; $('#modalName').focus(); }
+function closeModal(){ modalBack.style.display = 'none'; }
+
+// Save admin profile (simple)
+function saveAdmin(){
+  const name = $('#modalName').value.trim();
+  let phone = $('#modalPhone').value.trim();
+  if (!name || !phone){ alert('Please enter name and phone'); return; }
+  // normalize phone (remove spaces)
+  phone = phone.replace(/\s+/g,'');
+  admin = { name, phone, username: name.toLowerCase().replace(/\s+/g,''), role: 'admin' };
+  setLS('signupData', admin);
+  // set currentUser as admin as well (for simple access control in demo)
+  setLS('currentUser', { username: admin.username, role: 'admin' });
+  renderPage();
+  closeModal();
+  alert('Admin profile saved.');
+}
+
+// If no admin found, open modal automatically
+if (!admin) {
+  // show modal to create admin
+  setTimeout(openModal, 300);
+}
+
+// --------------------------- Permissions ---------------------------
+function isAdminLoggedIn(){
+  // basic client-only check: either signupData exists and currentUser role is admin
+  const cu = getLS('currentUser');
+  if (!admin) return false;
+  if (!cu) {
+    // If no currentUser but admin exists - assume admin is logged in (for local demo)
+    return true;
+  }
+  return cu.role === 'admin' && cu.username === admin.username;
+}
+
+// --------------------------- Notification Items ---------------------------
+/*
+  We define the notification types here; each item:
+  id - unique key to save state
+  title, desc - shown in UI
+  messageTemplate - string used to prefill WhatsApp message
+*/
+const NOTIFS = [
+  {
+    id: 'new_patient',
+    title: 'New Patient Added',
+    desc: 'Notify when a new patient is added to the records.',
+    messageTemplate: (data)=> `🔔 New patient added\nName: ${data?.name || '[Patient Name]'}\nBranch: ${data?.branch || '[Branch]'}\nDate: ${new Date().toLocaleString()}`,
+    badge: 'NP'
+  },
+  {
+    id: 'pending_payment',
+    title: 'Pending Payment Alert',
+    desc: 'Alert for pending payments older than configured threshold.',
+    messageTemplate: (data)=> `⚠️ Pending payment alert\nPatient: ${data?.name || '[Patient]'}\nDue: ₹${data?.amount || '[Amount]'}\nBranch: ${data?.branch || '[Branch]'}`,
+    badge: 'PP'
+  },
+  {
+    id: 'completed_payment',
+    title: 'Completed Payment',
+    desc: 'Notify when a payment is completed.',
+    messageTemplate: (data)=> `✅ Payment completed\nPatient: ${data?.name || '[Patient]'}\nAmount: ₹${data?.amount || '[Amount]'}\nDate: ${new Date().toLocaleDateString()}`,
+    badge: 'CP'
+  },
+  {
+    id: 'staff_login',
+    title: 'New Staff Login',
+    desc: 'Notify when a staff member logs in.',
+    messageTemplate: (data)=> `👤 Staff login\nStaff: ${data?.staffName || '[Staff Name]'}\nTime: ${new Date().toLocaleTimeString()}`,
+    badge: 'SL'
+  }
+];
+
+// --------------------------- Persisted settings ---------------------------
+const DEFAULT_SETTINGS = NOTIFS.reduce((acc,n)=>{ acc[n.id] = false; return acc; }, {});
+let notifSettings = getLS('notifSettings') || DEFAULT_SETTINGS;
+
+// Save settings
+function saveSettings(){ setLS('notifSettings', notifSettings); }
+
+// --------------------------- Send WhatsApp ---------------------------
+function openWhatsAppTo(number, message){
+  // number must be in international format without spaces or leading zeros removed
+  // We'll ensure + is removed for wa.me format
+  if(!number){ alert('Admin phone not set.'); return; }
+  const num = number.replace(/\+/g,'').replace(/\s+/g,'');
+  const encoded = encodeURIComponent(message);
+  const url = `https://wa.me/${num}?text=${encoded}`;
+  window.open(url,'_blank');
+}
+
+// --------------------------- Render UI ---------------------------
+function renderPage(){
+  // Permission check
+  if(!isAdminLoggedIn()){
+    // hide main panel and show denied box
+    document.getElementById('mainPanel').innerHTML = `
+      <div class="denied">
+        <h3>Access denied</h3>
+        <p class="hint">This page is only visible to the clinic admin. Please log in as admin to change notification settings.</p>
+        <div style="margin-top:18px"><button class="profile-cta" onclick="openModal()">Set admin profile</button></div>
+      </div>
+    `;
+    // hide right card
+    document.getElementById('rightCard').style.display = 'none';
+    return;
+  }
+
+  // show founder card (right)
+  document.getElementById('rightCard').style.display = 'block';
+
+  // fill admin info
+  const adminNameEl = $('#adminName'); const adminPhoneShort = $('#adminPhoneShort');
+  const avatar = $('#avatarLetter'); const adminInitial = $('#adminInitial');
+  if(admin){
+    adminNameEl.textContent = admin.name;
+    // mask phone for short display (show last 4 digits)
+    let p = admin.phone || '';
+    const last = p.slice(-4);
+    adminPhoneShort.textContent = p ? `${p}` : '—';
+    $('#founderPhone').textContent = p || '+91 98765 43210';
+    avatar.textContent = admin.name[0].toUpperCase();
+    adminInitial.textContent = admin.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  // Build notification items
+  const container = $('#notifList');
+  container.innerHTML = '';
+  NOTIFS.forEach(item=>{
+    const enabled = !!notifSettings[item.id];
+    const div = document.createElement('div');
+    div.className = 'notif-item';
+    div.innerHTML = `
+      <div class="notif-left">
+        <div class="badge" style="background:linear-gradient(135deg,#6ab6ff,#7b61ff)">${item.badge}</div>
+        <div class="notif-body">
+          <div class="notif-title">${item.title}</div>
+          <div class="notif-desc">${item.desc}</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="small-btn" data-id="${item.id}" title="Send test">Test</button>
+        <div class="toggle ${enabled ? 'on' : ''}" role="switch" aria-checked="${enabled}" data-id="${item.id}">
+          <div class="knob"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  // attach handlers
+  document.querySelectorAll('.toggle').forEach(t=>{
+    t.onclick = e=>{
+      const id = t.getAttribute('data-id');
+      // flip state
+      notifSettings[id] = !notifSettings[id];
+      saveSettings();
+      // reflect UI
+      t.classList.toggle('on', notifSettings[id]);
+      t.setAttribute('aria-checked', notifSettings[id]);
+
+      if (notifSettings[id]) {
+        // immediate send a prefixed WhatsApp message when turned ON
+        const n = NOTIFS.find(n=>n.id===id);
+        const message = n.messageTemplate({});
+        openWhatsAppTo(admin.phone, message);
+      }
+    };
+  });
+
+  document.querySelectorAll('.small-btn').forEach(b=>{
+    b.onclick = e=>{
+      const id = b.getAttribute('data-id');
+      const n = NOTIFS.find(n=>n.id===id);
+      const message = n.messageTemplate({});
+      openWhatsAppTo(admin.phone, message);
+    };
+  });
+}
+
+// Open WhatsApp from right card: general message
+$('#openWhatsAppBtn').onclick = () => {
+  const msg = `Hello ${admin?.name || 'Admin'}, this is a test message from Notification Settings.`;
+  openWhatsAppTo(admin?.phone, msg);
+};
+
+// Edit profile button
+$('#btnEditProfile').onclick = () => openModal();
+
+// close modal when clicking outside
+modalBack.addEventListener('click', (ev)=>{ if(ev.target === modalBack) closeModal(); });
+
+// fill modal with admin data when opened
+modalBack.addEventListener('transitionstart', ()=>{ /* no-op */ });
+
+// When page loads: initialize settings and render
+(function init(){
+  // ensure notifSettings exists
+  const s = getLS('notifSettings');
+  if (!s) { setLS('notifSettings', DEFAULT_SETTINGS); notifSettings = DEFAULT_SETTINGS; }
+  // render
+  renderPage();
+})();
+
+// allow saving admin from developer console if needed
+window.__app = { getAdmin: ()=>admin, setLS, getLS, renderPage };
+
+</script>
+
+</body>
+</html>
