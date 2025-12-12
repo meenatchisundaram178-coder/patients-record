@@ -39,7 +39,8 @@
             font-size: 20px;
             font-weight: 700;
             background: linear-gradient(90deg, #ffffff, #e0fffa);
-            -webkit-background-clip: text;
+            -webkit-background-clip: text; /* For older WebKit browsers */
+            background-clip: text;         /* Standard property for modern browsers */
             -webkit-text-fill-color: transparent;
             color: transparent;
         }
@@ -113,11 +114,9 @@
 
 <body>
 
-    <!-- FIXED SCRIPT -->
     <script>
         const backendURL = "https://rajesh-backend-72q8.onrender.com";
 
-        // FIXED SESSION CHECK — WILL NOT GO BACK TO LOGIN UNNECESSARILY
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const res = await fetch(`${backendURL}/check_session`, {
@@ -127,24 +126,21 @@
 
                 if (!res.ok) {
                     console.error("Session API Down - Staying on page");
-                    return; 
+                    return;
                 }
 
                 const data = await res.json();
                 console.log("Session status:", data);
 
-                // If backend confirms NOT LOGGED IN → redirect
                 if (data.logged_in === false) {
                     window.location.href = "Login.html";
                 }
 
             } catch (err) {
                 console.error("Session check failed:", err);
-                // DO NOT REDIRECT on failure
             }
         });
 
-        // LOGOUT
         async function logout() {
             try {
                 await fetch(`${backendURL}/logout`, {
