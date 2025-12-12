@@ -75,17 +75,15 @@ button.action {
 .view-btn { background: #22b14c; color: white; }
 .edit-btn { background: #f39c12; color: white; }
 .delete-btn { background: #e03a3a; color: white; }
-
 </style>
 </head>
 <body>
 
-<!-- 🔍 SEARCH BAR SECTION -->
 <div class="top-bar">
     <input type="text" id="searchText" placeholder="Search name or phone...">
     
     <select id="branchFilter">
-        <option value="" disabled selected>All Branches</option>
+        <option value="" selected>All Branches</option>
         <option value="Tirupattur">Tirupattur</option>
         <option value="Uthangarai">Uthangarai</option>
     </select>
@@ -111,70 +109,87 @@ button.action {
 </div>
 
 <script>
+const API_BASE = "https://pateintrecords.onrender.com"; // Your backend URL
+let patients = [];
 
-function loadRecords(filtered = null) {
-    let patients = JSON.parse(localStorage.getItem("patients")) || [];
-    let tbody = document.getElementById("recordBody");
-    tbody.innerHTML = "";
+// Load all patients from backend
+async function loadRecords(filtered = null) {
+    try {
+        if(!patients.length){
+            const res = await fetch(`${API_BASE}/patients`);
+            patients = await res.json();
+        }
+        const list = filtered || patients;
+        let tbody = document.getElementById("recordBody");
+        tbody.innerHTML = "";
 
-    let list = filtered || patients;
-
-    list.forEach((p, index) => {
-        let row = `
-        <tr>
-            <td>${p.name}</td>
-            <td>${p.phone}</td>
-            <td>${p.branch}</td>
-            <td>${p.remaining}</td>
-            <td>
-                <button class="action view-btn" onclick="viewPatient(${index})">View</button>
-                <button class="action edit-btn" onclick="editPatient(${index})">Edit</button>
-                <button class="action delete-btn" onclick="deletePatient(${index})">Delete</button>
-            </td>
-        </tr>`;
-        tbody.innerHTML += row;
-    });
+        list.forEach(p => {
+            let row = `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.phone}</td>
+                <td>${p.branch || ""}</td>
+                <td>${p.remaining || 0}</td>
+                <td>
+                    <button class="action view-btn" onclick="viewPatient('${p._id}')">View</button>
+                    <button class="action edit-btn" onclick="editPatient('${p._id}')">Edit</button>
+                    <button class="action delete-btn" onclick="deletePatient('${p._id}')">Delete</button>
+                </td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    } catch(err){
+        console.error("Error loading patients:", err);
+        alert("Failed to load patient records.");
+    }
 }
 
+// Filter patients
 function applyFilter() {
-    let search = document.getElementById("searchText").value.toLowerCase();
-    let branch = document.getElementById("branchFilter").value;
+    const search = document.getElementById("searchText").value.toLowerCase();
+    const branch = document.getElementById("branchFilter").value;
 
-    let patients = JSON.parse(localStorage.getItem("patients")) || [];
-
-    let filtered = patients.filter(p => {
-        let matchText = p.name.toLowerCase().includes(search) ||
-                        p.phone.toLowerCase().includes(search);
-
-        let matchBranch = (branch === "All") || (p.branch === branch);
-
+    const filtered = patients.filter(p => {
+        const matchText = p.name.toLowerCase().includes(search) ||
+                          (p.phone && p.phone.toLowerCase().includes(search));
+        const matchBranch = (branch === "" || p.branch === branch);
         return matchText && matchBranch;
     });
 
     loadRecords(filtered);
 }
 
-function viewPatient(index) {
-    localStorage.setItem("editIndex", index);
-    window.location.href = "Add Patient.html";
+// View / Edit patient
+function viewPatient(id) {
+    window.location.href = `Add Patient.html?id=${id}`;
+}
+function editPatient(id) {
+    window.location.href = `Add Patient.html?id=${id}`;
 }
 
-function editPatient(index) {
-    localStorage.setItem("editIndex", index);
-    window.location.href = "Add Patient.html";
-}
+// Delete patient
+async function deletePatient(id) {
+    if(!confirm("Are you sure you want to delete this patient?")) return;
 
-function deletePatient(index) {
-    if (confirm("Are you sure you want to delete?")) {
-        let patients = JSON.parse(localStorage.getItem("patients"));
-        patients.splice(index, 1);
-        localStorage.setItem("patients", JSON.stringify(patients));
-        applyFilter();
+    try {
+        const res = await fetch(`${API_BASE}/delete-patient/${id}`, { method: "DELETE" });
+        const data = await res.json();
+
+        if(res.ok && data.status === "success"){
+            // Remove deleted patient from local array and refresh table
+            patients = patients.filter(p => p._id !== id);
+            applyFilter();
+            alert("Patient deleted successfully!");
+        } else {
+            alert("Error deleting patient: " + (data.message || "Unknown error"));
+        }
+    } catch(err){
+        alert("Error deleting patient: " + err.message);
     }
 }
 
+// Initial load
 loadRecords();
-
 </script>
 
 </body>

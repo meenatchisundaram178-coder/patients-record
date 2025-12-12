@@ -66,7 +66,6 @@ input, select, textarea {
     font-size: 14px;
 }
 
-/* 🔥 Remove thick border on focus */
 input:focus, select:focus, textarea:focus {
     outline: none;
     border: 1px solid #0d8a5a;
@@ -100,7 +99,6 @@ textarea {
     margin-left: 10px;
 }
 
-/* ----------- CHECKBOX DROPDOWN STYLE --------------- */
 .checkbox-dropdown {
     position: relative;
     width: 300px;
@@ -139,22 +137,6 @@ textarea {
     z-index: 10;
 }
 
-/* ⭐ Thin Scrollbar */
-.checkbox-list::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-.checkbox-list::-webkit-scrollbar-thumb {
-    background: #bdbdbd;
-    border-radius: 10px;
-}
-
-.checkbox-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
 .checkbox-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -173,51 +155,19 @@ textarea {
     height: 16px;
 }
 
-/* ----------- MOBILE RESPONSIVE -------------- */
 @media (max-width: 768px) {
-
-    body {
-        padding: 10px;
-    }
-
-    .container {
-        padding: 15px;
-    }
-
-    .grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .grid-4 {
-        grid-template-columns: 1fr 1fr !important;
-    }
-
-    .buttons {
-        text-align: center;
-    }
-
-    .add-btn,
-    .cancel-btn {
-        width: 45%;
-        margin-top: 10px;
-    }
+    body { padding: 10px; }
+    .container { padding: 15px; }
+    .grid { grid-template-columns: 1fr !important; }
+    .grid-4 { grid-template-columns: 1fr 1fr !important; }
+    .buttons { text-align: center; }
+    .add-btn, .cancel-btn { width: 45%; margin-top: 10px; }
 }
 
 @media (max-width: 480px) {
-
-    .grid-4 {
-        grid-template-columns: 1fr !important;
-    }
-
-    .checkbox-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .add-btn,
-    .cancel-btn {
-        width: 100%;
-        margin-left: 0;
-    }
+    .grid-4 { grid-template-columns: 1fr !important; }
+    .checkbox-grid { grid-template-columns: 1fr !important; }
+    .add-btn, .cancel-btn { width: 100%; margin-left: 0; }
 }
 </style>
 </head>
@@ -231,7 +181,6 @@ textarea {
     <div class="section-title">BASIC INFORMATION</div>
 
     <div class="grid">
-
         <div>
             <label>Branch *</label>
                 <select id="branch">
@@ -243,17 +192,17 @@ textarea {
 
         <div>
             <label>Full Name *</label>
-            <input type="text" placeholder="Enter full name" />
+            <input type="text" id="fullName" placeholder="Enter full name" />
         </div>
 
         <div>
             <label>Age *</label>
-            <input type="number" placeholder="Age" />
+            <input type="number" id="age" placeholder="Age" />
         </div>
 
         <div>
             <label>Gender *</label>
-                <select>
+                <select id="gender">
                     <option value="" disabled selected>Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -262,36 +211,36 @@ textarea {
 
         <div>
             <label>Contact *</label>
-            <input type="text" placeholder="Phone number" />
+            <input type="text" id="phone" placeholder="Phone number" />
         </div>
 
         <div>
             <label>Email</label>
-            <input type="email" placeholder="example@gmail.com" />
+            <input type="email" id="email" placeholder="example@gmail.com" />
         </div>
 
         <div>
             <label>Address</label>
-            <input type="text" placeholder="Enter address" />
+            <input type="text" id="address" placeholder="Enter address" />
         </div>
     </div>
 
     <!-- RIGHT EYE -->
     <div class="section-title">RIGHT EYE (OD) PRESCRIPTION</div>
     <div class="grid-4">
-        <div><label>SPH</label><input type="text" placeholder="e.g., -2.00" /></div>
-        <div><label>CYL</label><input type="text" placeholder="e.g., -0.50" /></div>
-        <div><label>AXIS</label><input type="text" placeholder="e.g., 180" /></div>
-        <div><label>ADD</label><input type="text" placeholder="e.g., +2.00" /></div>
+        <div><label>SPH</label><input type="text" id="sph_od" placeholder="e.g., -2.00" /></div>
+        <div><label>CYL</label><input type="text" id="cyl_od" placeholder="e.g., -0.50" /></div>
+        <div><label>AXIS</label><input type="text" id="axis_od" placeholder="e.g., 180" /></div>
+        <div><label>ADD</label><input type="text" id="add_od" placeholder="e.g., +2.00" /></div>
     </div>
 
     <!-- LEFT EYE -->
     <div class="section-title">LEFT EYE (OS) PRESCRIPTION</div>
     <div class="grid-4">
-        <div><label>SPH</label><input type="text" placeholder="e.g., -2.25" /></div>
-        <div><label>CYL</label><input type="text" placeholder="e.g., -0.75" /></div>
-        <div><label>AXIS</label><input type="text" placeholder="e.g., 90" /></div>
-        <div><label>ADD</label><input type="text" placeholder="e.g., +2.00" /></div>
+        <div><label>SPH</label><input type="text" id="sph_os" placeholder="e.g., -2.25" /></div>
+        <div><label>CYL</label><input type="text" id="cyl_os" placeholder="e.g., -0.75" /></div>
+        <div><label>AXIS</label><input type="text" id="axis_os" placeholder="e.g., 90" /></div>
+        <div><label>ADD</label><input type="text" id="add_os" placeholder="e.g., +2.00" /></div>
     </div>
 
     <!-- VISION -->
@@ -299,25 +248,24 @@ textarea {
     <div class="grid">
         <div>
             <label>Vision (OD)</label>
-            <input type="text" placeholder="e.g., 20/20" />
+            <input type="text" id="vision_od" placeholder="e.g., 20/20" />
         </div>
         <div>
             <label>Vision (OS)</label>
-            <input type="text" placeholder="e.g., 20/40" />
+            <input type="text" id="vision_os" placeholder="e.g., 20/40" />
         </div>
         <div>
             <label>PD (Pupillary Distance)</label>
-            <input type="text" placeholder="e.g., 63mm" />
+            <input type="text" id="pd" placeholder="e.g., 63mm" />
         </div>
     </div>
 
     <!-- EYEWEAR DETAILS -->
     <div class="section-title">EYEWEAR DETAILS</div>
     <div class="grid">
-
         <div>
             <label>Frame Type</label>
-                <select>
+                <select id="frameType">
                     <option value="" disabled selected>Select Frame Type</option>
                     <option value="Full-rim">Full-rim</option>
                     <option value="Semi-rimless">Semi-rimless</option>
@@ -327,7 +275,7 @@ textarea {
 
         <div>
             <label>Lens Type</label>
-            <select>
+            <select id="lensType">
                 <option value="" disabled selected>Select Lens Type</option>
                 <option value="Single Vision">Single Vision</option>
                 <option value="Bifocal">Bifocal</option>
@@ -335,34 +283,29 @@ textarea {
             </select>
         </div>
 
-        <!-- Lens Coating -->
         <div class="form-group">
             <label>Lens Coating</label>
-
             <div class="checkbox-dropdown">
-                <div class="checkbox-dropdown-button" onclick="toggleCoatingDropdown()">
-                    Select Coatings
-                </div>
-
+                <div class="checkbox-dropdown-button" onclick="toggleCoatingDropdown()">Select Coatings</div>
                 <div class="checkbox-list" id="coatingList">
                     <div class="checkbox-grid">
-                        <label><input type="checkbox"> Crizal</label>
-                        <label><input type="checkbox"> Prevencia</label>
-                        <label><input type="checkbox"> Blue Block</label>
-                        <label><input type="checkbox"> S92</label>
-                        <label><input type="checkbox"> PG</label>
-                        <label><input type="checkbox"> Krypto</label>
-                        <label><input type="checkbox"> DBF</label>
-                        <label><input type="checkbox"> Essilor</label>
-                        <label><input type="checkbox"> Progressive</label>
-                        <label><input type="checkbox"> Free Form</label>
-                        <label><input type="checkbox"> GKB Swiss</label>
-                        <label><input type="checkbox"> Glass</label>
-                        <label><input type="checkbox"> CR</label>
-                        <label><input type="checkbox"> Hindex</label>
-                        <label><input type="checkbox"> ARC</label>
-                        <label><input type="checkbox"> Promax</label>
-                        <label><input type="checkbox"> Kodak</label>
+                        <label><input type="checkbox" value="Crizal"> Crizal</label>
+                        <label><input type="checkbox" value="Prevencia"> Prevencia</label>
+                        <label><input type="checkbox" value="Blue Block"> Blue Block</label>
+                        <label><input type="checkbox" value="S92"> S92</label>
+                        <label><input type="checkbox" value="PG"> PG</label>
+                        <label><input type="checkbox" value="Krypto"> Krypto</label>
+                        <label><input type="checkbox" value="DBF"> DBF</label>
+                        <label><input type="checkbox" value="Essilor"> Essilor</label>
+                        <label><input type="checkbox" value="Progressive"> Progressive</label>
+                        <label><input type="checkbox" value="Free Form"> Free Form</label>
+                        <label><input type="checkbox" value="GKB Swiss"> GKB Swiss</label>
+                        <label><input type="checkbox" value="Glass"> Glass</label>
+                        <label><input type="checkbox" value="CR"> CR</label>
+                        <label><input type="checkbox" value="Hindex"> Hindex</label>
+                        <label><input type="checkbox" value="ARC"> ARC</label>
+                        <label><input type="checkbox" value="Promax"> Promax</label>
+                        <label><input type="checkbox" value="Kodak"> Kodak</label>
                     </div>
                 </div>
             </div>
@@ -370,43 +313,34 @@ textarea {
 
         <div>
             <label>Contact Lens Type</label>
-            <input type="text" placeholder="e.g., Daily, Monthly" />
+            <input type="text" id="contactLens" placeholder="e.g., Daily, Monthly" />
         </div>
-
     </div>
 
     <!-- ADDITIONAL INFORMATION -->
     <div class="section-title">ADDITIONAL INFORMATION</div>
-
     <label>Systemic History</label>
-    <textarea placeholder="Diabetes, Hypertension, Thyroid..."></textarea>
-
+    <textarea id="systemicHistory" placeholder="Diabetes, Hypertension, Thyroid..."></textarea>
     <label>Ocular History</label>
-    <textarea placeholder="Eye surgeries, previous issues..."></textarea>
-
+    <textarea id="ocularHistory" placeholder="Eye surgeries, previous issues..."></textarea>
     <label>Eye Conditions</label>
-    <textarea placeholder="Any eye conditions or concerns"></textarea>
-
+    <textarea id="eyeConditions" placeholder="Any eye conditions or concerns"></textarea>
     <label>Notes</label>
-    <textarea placeholder="Additional notes"></textarea>
-
+    <textarea id="notes" placeholder="Additional notes"></textarea>
     <label>Next Appointment</label>
-    <input type="date" />
+    <input type="date" id="nextAppointment" />
 
     <!-- PAYMENT DETAILS -->
     <div class="section-title">PAYMENT DETAILS</div>
-
     <div class="grid">
         <div>
             <label>Total Amount *</label>
             <input type="number" id="total" placeholder="Total Amount">
         </div>
-
         <div>
             <label>Advance *</label>
             <input type="number" id="advance" placeholder="Advance Paid">
         </div>
-
         <div>
             <label>Remaining Amount</label>
             <input type="number" id="remaining" readonly>
@@ -415,10 +349,9 @@ textarea {
 
     <!-- BUTTONS -->
     <div class="buttons">
-        <button class="cancel-btn">Cancel</button>
-        <button class="add-btn">Add Patient</button>
+        <button class="cancel-btn" onclick="window.history.back()">Cancel</button>
+        <button class="add-btn">Save Patient</button>
     </div>
-
 </div>
 
 <script>
@@ -427,6 +360,7 @@ function toggleCoatingDropdown() {
     list.style.display = (list.style.display === "block") ? "none" : "block";
 }
 
+// Calculate remaining amount
 document.getElementById("total").addEventListener("input", calculateRemaining);
 document.getElementById("advance").addEventListener("input", calculateRemaining);
 
@@ -436,65 +370,116 @@ function calculateRemaining() {
     let remaining = total - advance;
     document.getElementById("remaining").value = remaining >= 0 ? remaining : 0;
 }
-// ---------- AUTO FILL WHEN VIEW ----------
-document.querySelector(".add-btn").onclick = () => {
 
-    let p = {
+// Load patient if edit
+const urlParams = new URLSearchParams(window.location.search);
+const patientId = urlParams.get("id");
+
+if (patientId) {
+    fetch(`https://pateintrecords.onrender.com/patient/${patientId}`)
+    .then(res => res.json())
+    .then(p => {
+        document.getElementById("branch").value = p.branch || "";
+        document.getElementById("fullName").value = p.name || "";
+        document.getElementById("age").value = p.age || "";
+        document.getElementById("gender").value = p.gender || "";
+        document.getElementById("phone").value = p.phone || "";
+        document.getElementById("email").value = p.email || "";
+        document.getElementById("address").value = p.address || "";
+        document.getElementById("sph_od").value = p.sph_od || "";
+        document.getElementById("cyl_od").value = p.cyl_od || "";
+        document.getElementById("axis_od").value = p.axis_od || "";
+        document.getElementById("add_od").value = p.add_od || "";
+        document.getElementById("sph_os").value = p.sph_os || "";
+        document.getElementById("cyl_os").value = p.cyl_os || "";
+        document.getElementById("axis_os").value = p.axis_os || "";
+        document.getElementById("add_os").value = p.add_os || "";
+        document.getElementById("vision_od").value = p.vision_od || "";
+        document.getElementById("vision_os").value = p.vision_os || "";
+        document.getElementById("pd").value = p.pd || "";
+        document.getElementById("systemicHistory").value = p.systemicHistory || "";
+        document.getElementById("ocularHistory").value = p.ocularHistory || "";
+        document.getElementById("eyeConditions").value = p.eyeConditions || "";
+        document.getElementById("notes").value = p.notes || "";
+        document.getElementById("nextAppointment").value = p.nextAppointment || "";
+        document.getElementById("total").value = p.total || "";
+        document.getElementById("advance").value = p.advance || "";
+        document.getElementById("remaining").value = p.remaining || "";
+        document.getElementById("frameType").value = p.frameType || "";
+        document.getElementById("lensType").value = p.lensType || "";
+        document.getElementById("contactLens").value = p.contactLens || "";
+
+        if(p.coatings && p.coatings.length){
+            document.querySelectorAll("#coatingList input[type='checkbox']").forEach(ch => {
+                if(p.coatings.includes(ch.value)) ch.checked = true;
+            });
+        }
+    })
+    .catch(err => console.log(err));
+}
+
+// Save or update patient
+document.querySelector(".add-btn").onclick = async () => {
+    let coatings = Array.from(document.querySelectorAll("#coatingList input[type='checkbox']:checked")).map(c => c.value);
+
+    let patientData = {
         branch: document.getElementById("branch").value,
-        name: document.querySelector("input[placeholder='Enter full name']").value,
-        age: document.querySelector("input[placeholder='Age']").value,
-        gender: document.querySelector("select").value,
-        phone: document.querySelector("input[placeholder='Phone number']").value,
-        email: document.querySelector("input[placeholder='example@gmail.com']").value,
-        address: document.querySelector("input[placeholder='Enter address']").value,
-
-        sph_od: document.querySelector("input[placeholder='e.g., -2.00']").value,
-        cyl_od: document.querySelector("input[placeholder='e.g., -0.50']").value,
-        axis_od: document.querySelector("input[placeholder='e.g., 180']").value,
-        add_od: document.querySelectorAll("input[placeholder='e.g., +2.00']")[0].value,
-
-        sph_os: document.querySelectorAll("input[placeholder='e.g., -2.25']")[0].value,
-        cyl_os: document.querySelectorAll("input[placeholder='e.g., -0.75']")[0].value,
-        axis_os: document.querySelectorAll("input[placeholder='e.g., 90']")[0].value,
-        add_os: document.querySelectorAll("input[placeholder='e.g., +2.00']")[1].value,
-
-        vision_od: document.querySelector("input[placeholder='e.g., 20/20']").value,
-        vision_os: document.querySelector("input[placeholder='e.g., 20/40']").value,
-        pd: document.querySelector("input[placeholder='e.g., 63mm']").value,
-
-        systemicHistory: document.querySelectorAll("textarea")[0].value,
-        ocularHistory: document.querySelectorAll("textarea")[1].value,
-        eyeConditions: document.querySelectorAll("textarea")[2].value,
-        notes: document.querySelectorAll("textarea")[3].value,
-
-        nextAppointment: document.querySelector("input[type='date']").value,
-
+        name: document.getElementById("fullName").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        sph_od: document.getElementById("sph_od").value,
+        cyl_od: document.getElementById("cyl_od").value,
+        axis_od: document.getElementById("axis_od").value,
+        add_od: document.getElementById("add_od").value,
+        sph_os: document.getElementById("sph_os").value,
+        cyl_os: document.getElementById("cyl_os").value,
+        axis_os: document.getElementById("axis_os").value,
+        add_os: document.getElementById("add_os").value,
+        vision_od: document.getElementById("vision_od").value,
+        vision_os: document.getElementById("vision_os").value,
+        pd: document.getElementById("pd").value,
+        systemicHistory: document.getElementById("systemicHistory").value,
+        ocularHistory: document.getElementById("ocularHistory").value,
+        eyeConditions: document.getElementById("eyeConditions").value,
+        notes: document.getElementById("notes").value,
+        nextAppointment: document.getElementById("nextAppointment").value,
         total: document.getElementById("total").value,
         advance: document.getElementById("advance").value,
         remaining: document.getElementById("remaining").value,
+        coatings: coatings,
+        frameType: document.getElementById("frameType").value,
+        lensType: document.getElementById("lensType").value,
+        contactLens: document.getElementById("contactLens").value
     };
 
-    let patients = JSON.parse(localStorage.getItem("patients")) || [];
-    patients.push(p);
-    localStorage.setItem("patients", JSON.stringify(patients));
+    try {
+        let url = 'https://pateintrecords.onrender.com/add-patient';
+        let method = 'POST';
+        if(patientId){
+            url = `https://pateintrecords.onrender.com/update-patient/${patientId}`;
+            method = 'PUT';
+        }
 
-    // --- SAVE PAYMENT RECORD FOR VIEW PAYMENT PAGE ---
-let payments = JSON.parse(localStorage.getItem("payments")) || [];
+        let res = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(patientData)
+        });
 
-payments.push({
-    name: p.name,
-    branch: p.branch,
-    date: new Date().toLocaleDateString(),
-    amount: p.advance
-});
-
-localStorage.setItem("payments", JSON.stringify(payments));
-
-    alert("Patient saved successfully!");
-    window.location.href = "Patient Records.html";
+        let data = await res.json();
+        if(res.ok && data.status === "success"){
+            alert("Patient saved successfully!");
+            window.location.href = "Patient Records.html";
+        } else {
+            alert("Error: " + (data.message || "Something went wrong"));
+        }
+    } catch(err) {
+        alert("Error: " + err.message);
+    }
 };
-
-
 </script>
 
 </body>

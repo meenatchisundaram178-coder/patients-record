@@ -72,6 +72,10 @@
 </style>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const backendURL = "https://rajesh-backend-optical-1.onrender.com";
+ // Flask backend URL
+
     function showSignup() {
         document.getElementById("login-box").style.display = "none";
         document.getElementById("signup-box").style.display = "block";
@@ -81,53 +85,80 @@
         document.getElementById("signup-box").style.display = "none";
         document.getElementById("login-box").style.display = "block";
     }
-    /* SIGNUP SAVE */
-function signupUser() {
-    let fullName = document.getElementById("s_fullname").value;
-    let phone = document.getElementById("s_phone").value;
-    let email = document.getElementById("s_email").value;
-    let username = document.getElementById("s_username").value;
-    let password = document.getElementById("s_password").value;
 
-    if (!fullName || !phone || !email || !username || !password) {
-        alert("Please fill all fields!");
-        return;
+    // SIGNUP
+    async function signupUser() {
+        const fullName = document.querySelector("#signup-box input[placeholder='Full Name']").value;
+        const phone = document.querySelector("#signup-box input[placeholder='Phone Number']").value;
+        const email = document.querySelector("#signup-box input[placeholder='Email']").value;
+        const username = document.querySelector("#signup-box input[placeholder='Create Username']").value;
+        const password = document.querySelector("#signup-box input[placeholder='Create Password']").value;
+        const role = document.querySelector("#signup-box select")?.value || "Staff";
+
+        if (!fullName || !phone || !email || !username || !password) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${backendURL}/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fullname: fullName, phone, email, username, password, role })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                alert(data.msg);
+                window.location.href = "HOme.html"; // redirect to home page
+            } else {
+                alert(data.msg);
+            }
+        } catch (err) {
+            alert("Error connecting to server");
+            console.error(err);
+        }
     }
 
-    let signupData = {
-        fullname: fullName,
-        phone: phone,
-        email: email,
-        username: username,
-        password: password
-    };
+    // LOGIN
+    async function loginUser() {
+        const username = document.querySelector("#login-box input[placeholder='Username / Phone No']").value;
+        const password = document.querySelector("#login-box input[placeholder='Password']").value;
 
-    localStorage.setItem("signupData", JSON.stringify(signupData));
+        if (!username || !password) {
+            alert("Please enter username and password");
+            return;
+        }
 
-    alert("Account Created Successfully!");
+        try {
+            const res = await fetch(`${backendURL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+                credentials: 'include' // important for session cookie
+            });
 
-    window.location.href = "settings.html";  // 🔗 Go to Settings
-}
-/* LOGIN CHECK */
-function loginUser() {
-    let username = document.getElementById("l_username").value;
-    let password = document.getElementById("l_password").value;
+            const data = await res.json();
 
-    let saved = JSON.parse(localStorage.getItem("signupData"));
-
-    if (!saved) {
-        alert("No account found! Please Sign Up.");
-        return;
+            if (data.ok) {
+                alert(data.msg);
+                window.location.href = "HOme.html"; // redirect to home page
+            } else {
+                alert(data.msg);
+            }
+        } catch (err) {
+            alert("Error connecting to server");
+            console.error(err);
+        }
     }
 
-    if (username === saved.username && password === saved.password) {
-        alert("Login Successful!");
-        window.location.href = "settings.html";
-    } else {
-        alert("Invalid username or password");
-    }
-}
-
+    // Attach events
+    document.querySelector("#signup-box button").onclick = signupUser;
+    document.querySelector("#login-box button").onclick = loginUser;
+    document.querySelector("#login-box .toggle-link").onclick = showSignup;
+    document.querySelector("#signup-box .toggle-link").onclick = showLogin;
+});
 </script>
 
 </head>
@@ -135,7 +166,6 @@ function loginUser() {
 
 <div class="container">
 
-    <!-- Logo + Name (top of box) -->
     <img src="logo.jpg" alt="Logo">
     <h1>RAJESH OPTICALS</h1>
 
@@ -145,13 +175,10 @@ function loginUser() {
             <option>Admin</option>
             <option>Staff</option>
         </select>
-
         <input type="text" class="input-box" placeholder="Username / Phone No">
         <input type="password" class="input-box" placeholder="Password">
-
         <button class="btn">Login</button>
-
-        <span class="toggle-link" onclick="showSignup()">New User? Sign Up</span>
+        <span class="toggle-link">New User? Sign Up</span>
     </div>
 
     <!-- SIGNUP -->
@@ -161,10 +188,12 @@ function loginUser() {
         <input type="text" class="input-box" placeholder="Email">
         <input type="text" class="input-box" placeholder="Create Username">
         <input type="password" class="input-box" placeholder="Create Password">
-
+        <select class="dropdown">
+            <option>Admin</option>
+            <option>Staff</option>
+        </select>
         <button class="btn">Sign Up</button>
-
-        <span class="toggle-link" onclick="showLogin()">Already have an account? Login</span>
+        <span class="toggle-link">Already have an account? Login</span>
     </div>
 
 </div>

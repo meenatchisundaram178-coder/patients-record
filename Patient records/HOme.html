@@ -7,14 +7,12 @@
     <title>Rajesh Opticals – Dashboard</title>
 
     <style>
-        /* GLOBAL */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f3f7fc;
         }
 
-        /* NAVBAR */
         .navbar {
             display: flex;
             align-items: center;
@@ -24,7 +22,6 @@
             color: white;
         }
 
-        /* LOGO SECTION */
         .logo-section {
             display: flex;
             align-items: center;
@@ -44,9 +41,9 @@
             background: linear-gradient(90deg, #ffffff, #e0fffa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            color: transparent;
         }
 
-        /* NAV LINKS */
         .nav-links {
             display: flex;
             list-style: none;
@@ -59,7 +56,6 @@
             cursor: pointer;
         }
 
-        /* LOGOUT BUTTON */
         .logout-btn {
             background: #ff4f4f;
             color: white;
@@ -70,7 +66,6 @@
             cursor: pointer;
         }
 
-        /* MAIN SECTION */
         .main {
             text-align: center;
             padding-top: 60px;
@@ -81,7 +76,6 @@
             font-weight: 700;
         }
 
-        /* CARDS */
         .cards {
             margin-top: 50px;
             display: flex;
@@ -114,65 +108,58 @@
             font-size: 40px;
             margin-bottom: 10px;
         }
-        /* -------- RESPONSIVE MOBILE FIX -------- */
-    @media (max-width: 768px) {
-
-        .navbar {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .nav-links {
-            flex-wrap: wrap;
-            gap: 15px;
-            font-size: 15px;
-        }
-
-        .logout-btn {
-            align-self: center;
-        }
-
-        .cards {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .card {
-            width: 90%;
-            max-width: 320px;
-        }
-    }
-
-    @media (max-width: 480px) {
-
-        .brand {
-            font-size: 16px;
-        }
-
-        .nav-links {
-            font-size: 14px;
-            gap: 10px;
-        }
-
-        .quick-title {
-            font-size: 22px;
-        }
-
-        .card {
-            height: 150px;
-        }
-
-        .icon {
-            font-size: 32px;
-        }
-    }
     </style>
 </head>
 
 <body>
 
-    <!-- NAVIGATION BAR -->
+    <!-- FIXED SCRIPT -->
+    <script>
+        const backendURL = "https://rajesh-backend-72q8.onrender.com";
+
+        // FIXED SESSION CHECK — WILL NOT GO BACK TO LOGIN UNNECESSARILY
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const res = await fetch(`${backendURL}/check_session`, {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                if (!res.ok) {
+                    console.error("Session API Down - Staying on page");
+                    return; 
+                }
+
+                const data = await res.json();
+                console.log("Session status:", data);
+
+                // If backend confirms NOT LOGGED IN → redirect
+                if (data.logged_in === false) {
+                    window.location.href = "Login.html";
+                }
+
+            } catch (err) {
+                console.error("Session check failed:", err);
+                // DO NOT REDIRECT on failure
+            }
+        });
+
+        // LOGOUT
+        async function logout() {
+            try {
+                await fetch(`${backendURL}/logout`, {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                window.location.href = "Login.html";
+
+            } catch (err) {
+                alert("Logout failed!");
+            }
+        }
+    </script>
+
     <nav class="navbar">
         <div class="logo-section">
             <img src="logo.jpg" class="logo" alt="Logo">
@@ -184,42 +171,32 @@
             <li onclick="window.location.href='Patient records.html'">Patient Records</li>
             <li onclick="window.location.href='Activity Log.html'">Activity Log</li>
             <li onclick="window.location.href='settings.html'">Settings</li>
-            <li  onclick="window.location.href='Notification.html'">Notifications</li>
+            <li onclick="window.location.href='Notification.html'">Notifications</li>
         </ul>
 
-        <button class="logout-btn">Logout</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <section class="main">
         <h2 class="quick-title">Quick Access</h2>
 
         <div class="cards">
-
-            <!-- ADD PATIENT LINK -->
             <a href="Add patient.html" class="card">
                 <div class="icon">➕</div>
                 <p>Add New Patient</p>
             </a>
 
-            <!-- PAYMENTS LINK -->
             <a href="view payment.html" class="card">
                 <div class="icon">💳</div>
                 <p>View Payments</p>
             </a>
 
-            <!-- ACTIVITY LOG LINK -->
             <a href="Activity Log.html" class="card">
                 <div class="icon">⏱️</div>
                 <p>Activity Log</p>
             </a>
-
         </div>
     </section>
-
-    <script>
-        console.log("Rajesh Opticals Dashboard Loaded Successfully");
-    </script>
 
 </body>
 
